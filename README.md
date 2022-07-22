@@ -28,20 +28,18 @@ For an example on how to build the project using the command line, refer to the 
 
 ### Installing
 
-`proxy-fmu` is hosted by the conan remote https://osp.jfrog.io/artifactory/api/conan/conan-local
+proxy-fmu is available through the conan remote ais:
 
-Add the remote using the command:
-```
-conan remote add osp https://osp.jfrog.io/artifactory/api/conan/conan-local
-```
+`conan remote add ais https://ais.jfrog.io/artifactory/api/conan/ais-conan-local`
 
-Then add a dependency to: `proxyfmu/<version>@osp/stable`
+Then add a dependency to:
+```
+libecos/<version>@ais/stable (stable channel -> releases)
+libecos/<version>@ais/testing (development builds -> master)
+libecos/<version>@ais/testing-<branch>` (development builds -> branches)
+```
 
 The artifact contains both the library and required executables.
-
-### proxy-fmu & libcosim
-
-Adding `proxy_fmu` support for [libcosim](https://github.com/open-simulation-platform/libcosim/blob/master/conanfile.py) is as simple as adding `-o proxyfmu=True` to its conan command.
 
 
 ### How is this project related to `FMU-proxy`?

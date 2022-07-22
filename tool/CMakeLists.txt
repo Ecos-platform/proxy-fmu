@@ -14,7 +14,7 @@ target_include_directories(proxyfmu
         "${generatedSourcesDir}")
 target_link_libraries(proxyfmu
         PUBLIC
-        fmilibwrapper
+        fmilibcpp::fmilibcpp
         thrift::thrift
         Boost::program_options
         )
