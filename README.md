@@ -39,13 +39,7 @@ libecos/<version>@ais/testing (development builds -> master)
 libecos/<version>@ais/testing-<branch>` (development builds -> branches)
 ```
 
-Then add a dependency to: `proxyfmu/<version>@osp/stable`
-
 The artifact contains both the library and required executables.
-
-### proxy-fmu & libcosim
-
-Adding `proxy_fmu` support for [libcosim](https://github.com/open-simulation-platform/libcosim/blob/master/conanfile.py) is as simple as adding `-o proxyfmu=True` to its conan command.
 
 
 ### How is this project related to `FMU-proxy`?
