@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 using namespace proxyfmu;
-using namespace proxyfmu::fmi;
+using namespace fmilibcpp;
 
 namespace
 {

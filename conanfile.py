@@ -4,7 +4,7 @@ from os import path
 
 class ProxyFmuConan(ConanFile):
     name = "proxyfmu"
-    author = "osp"
+    author = "NTNU Aalesund"
     license = "MIT"
     exports = "version.txt"
     scm = {
@@ -15,9 +15,9 @@ class ProxyFmuConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
     requires = (
-        "boost/1.71.0",
-        "fmilibrary/2.3",
-        "thrift/0.13.0"
+        "boost/1.78.0",
+        "thrift/0.16.0",
+        "fmilibcpp/0.2.2@ais/testing"
     )
 
     def set_version(self):
@@ -38,4 +38,3 @@ class ProxyFmuConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = ["proxyfmu-client"]
-        self.cpp_info.defines = ["Boost_USE_STATIC_LIBS=ON"]

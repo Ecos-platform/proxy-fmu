@@ -1,6 +1,7 @@
 
-#include <proxyfmu/lib_info.hpp>
 #include "boot_service_handler.hpp"
+
+#include <proxyfmu/lib_info.hpp>
 
 #include <boost/program_options.hpp>
 #include <thrift/server/TSimpleServer.h>

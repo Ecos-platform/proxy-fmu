@@ -12,7 +12,6 @@ message("Current ${PROJECT_NAME} version: ${CMAKE_PROJECT_VERSION}\n")
 set(BUILD_SHARED_LIBS OFF)
 option(PROXYFMU_BUILD_TESTS "Build tests" OFF)
 option(PROXYFMU_BUILD_EXAMPLES "Build examples" OFF)
-option(PROXYFMU_BUILD_TOOL "Build the server executable(s)" ON)
 
 
 # ==============================================================================
@@ -68,7 +67,7 @@ else ()
 
     conan_cmake_autodetect(settings)
 
-    conan_add_remote(NAME osp URL https://osp.jfrog.io/artifactory/api/conan/conan-local)
+    conan_add_remote(NAME ais URL https://ais.jfrog.io/artifactory/api/conan/ais-conan-local)
     conan_cmake_run(
             CONANFILE conanfile.py
             BUILD missing
@@ -92,7 +91,7 @@ endif ()
 
 find_package(Boost 1.71 COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
 find_package(THRIFT REQUIRED)
-find_package(FMILIB REQUIRED)
+find_package(Fmilibcpp CONFIG REQUIRED)
 
 
 # ==============================================================================
