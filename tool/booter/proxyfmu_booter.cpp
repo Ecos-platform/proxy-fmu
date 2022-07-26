@@ -55,7 +55,7 @@ int run_application(const int port)
     server->stop();
     t.join();
 
-    return 0;
+    return SUCCESS;
 }
 
 int printHelp(boost::program_options::options_description& desc)

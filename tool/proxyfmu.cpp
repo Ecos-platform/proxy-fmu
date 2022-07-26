@@ -91,10 +91,10 @@ int run_application(const std::string& fmu, const std::string& instanceName)
     }
 
     if (final_port != -1) {
-        return 0;
+        return SUCCESS;
     } else {
         std::cerr << "[proxyfmu] Unable to bind after max number of retries.." << std::endl;
-        return 1;
+        return UNHANDLED_ERROR;
     }
 
 }
