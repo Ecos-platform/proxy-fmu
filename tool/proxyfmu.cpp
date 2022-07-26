@@ -123,8 +123,8 @@ int main(int argc, char** argv)
     po::options_description desc("Options");
     desc.add_options()("help,h", "Print this help message and quits.");
     desc.add_options()("version,v", "Print program version.");
-    desc.add_options()("fmu", po::value<std::string>(), "Location of the fmu to load.");
-    desc.add_options()("instanceName", po::value<std::string>(), "Name of the slave instance.");
+    desc.add_options()("fmu", po::value<std::string>()->required(), "Location of the fmu to load.");
+    desc.add_options()("instanceName", po::value<std::string>()->required(), "Name of the slave instance.");
 
     if (argc == 1) {
         return printHelp(desc);
