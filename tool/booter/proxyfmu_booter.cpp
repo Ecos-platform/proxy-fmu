@@ -83,7 +83,7 @@ int main(int argc, char** argv)
     po::options_description desc("Options");
     desc.add_options()("help,h", "Print this help message and quits.");
     desc.add_options()("version,v", "Print program version.");
-    desc.add_options()("port", po::value<int>(), "Specify the network port to be used.");
+    desc.add_options()("port", po::value<int>()->required(), "Specify the network port to be used.");
 
     if (argc == 1) {
         return printHelp(desc);
