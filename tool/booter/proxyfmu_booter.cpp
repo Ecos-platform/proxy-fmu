@@ -104,10 +104,10 @@ int main(int argc, char** argv)
 
             po::notify(vm);
 
-        } catch (po::error& e) {
-            std::cerr << "ERROR: " << e.what() << std::endl
+        } catch (const po::error& e) {
+            std::cerr << "ERROR: " << e.what() << "\n"
                       << std::endl;
-            std::cerr << desc << std::endl;
+            std::cout << desc << std::endl;
             return COMMANDLINE_ERROR;
         }
 
@@ -115,7 +115,7 @@ int main(int argc, char** argv)
 
         return run_application(port);
 
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         std::cerr << "Unhandled Exception reached the top of main: " << e.what() << ", application will now exit" << std::endl;
         return UNHANDLED_ERROR;
     }

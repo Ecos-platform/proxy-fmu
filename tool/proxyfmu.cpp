@@ -145,17 +145,17 @@ int main(int argc, char** argv)
 
             po::notify(vm);
 
-        } catch (po::error& e) {
-            std::cerr << "ERROR: " << e.what() << std::endl
+        } catch (const po::error& e) {
+            std::cerr << "ERROR: " << e.what() << "\n"
                       << std::endl;
-            std::cerr << desc << std::endl;
+            std::cout << desc << std::endl;
             return COMMANDLINE_ERROR;
         }
 
         const auto fmu = vm["fmu"].as<std::string>();
         const auto fmuPath = proxyfmu::filesystem::path(fmu);
         if (!proxyfmu::filesystem::exists(fmuPath)) {
-            std::cerr << "[proxyfmu] No such file " << proxyfmu::filesystem::absolute(fmuPath);
+            std::cerr << "[proxyfmu] No such file: '" << proxyfmu::filesystem::absolute(fmuPath) << "'";
             return COMMANDLINE_ERROR;
         }
 
@@ -163,7 +163,7 @@ int main(int argc, char** argv)
 
         return run_application(fmu, instanceName);
 
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         std::cerr << "[proxyfmu] Unhandled Exception reached the top of main: " << e.what() << ", application will now exit" << std::endl;
         return UNHANDLED_ERROR;
     }
