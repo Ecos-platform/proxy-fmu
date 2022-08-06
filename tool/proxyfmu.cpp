@@ -1,10 +1,9 @@
 
+#include "fixed_range_random_generator.hpp"
 #include "fmu_service_handler.hpp"
 
-#include <proxyfmu/fixed_range_random_generator.hpp>
-#include <proxyfmu/fs_portability.hpp>
-#include <proxyfmu/lib_info.hpp>
-#include <proxyfmu/temp_dir.hpp>
+#include "proxyfmu/fs_portability.hpp"
+#include "proxyfmu/lib_info.hpp"
 
 #include <boost/program_options.hpp>
 #include <thrift/server/TSimpleServer.h>
@@ -15,7 +14,6 @@
 #include <ios>
 #include <iostream>
 #include <random>
-#include <sstream>
 #include <utility>
 
 using namespace proxyfmu::thrift;
@@ -119,7 +117,7 @@ int run_application(const std::string& fmu, const std::string& instanceName, boo
     std::shared_ptr<fmu_service_handler> handler(new fmu_service_handler(fmu, instanceName, stop));
     std::shared_ptr<TProcessor> processor(new FmuServiceProcessor(handler));
 
-    std::shared_ptr<TTransportFactory> transportFactory(new TFramedTransportFactory());
+    std::shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
     std::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
 
     if (!localhost) {

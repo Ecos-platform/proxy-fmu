@@ -87,7 +87,7 @@ proxy_slave::proxy_slave(
         throw std::runtime_error("[proxyfmu] Unable to bind to external proxy process!");
     }
 
-    transport_ = std::make_shared<TFramedTransport>(socket);
+    transport_ = std::make_shared<TBufferedTransport>(socket);
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport_));
     client_ = std::make_shared<FmuServiceClient>(protocol);
     transport_->open();

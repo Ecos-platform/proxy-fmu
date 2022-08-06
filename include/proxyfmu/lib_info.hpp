@@ -13,7 +13,7 @@ struct version
     int patch = 0;
 };
 
-/// Returns the version of the libcosim library.
+/// Returns the version of the proxyfmu library.
 version library_version();
 
 } // namespace proxyfmu

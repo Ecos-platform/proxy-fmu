@@ -4,7 +4,7 @@
 
 #include "fixed_range_random_generator.hpp"
 
-#include <proxyfmu/fs_portability.hpp>
+#include "proxyfmu/fs_portability.hpp"
 
 #include <iostream>
 #include <memory>

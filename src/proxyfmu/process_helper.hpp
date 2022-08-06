@@ -16,7 +16,8 @@
 namespace proxyfmu
 {
 
-std::string boolToStr(bool b) {
+std::string boolToStr(bool b)
+{
     return b ? "true" : "false";
 }
 
