@@ -16,12 +16,18 @@
 namespace proxyfmu
 {
 
+std::string boolToStr(bool b)
+{
+    return b ? "true" : "false";
+}
+
 void start_process(
     const proxyfmu::filesystem::path& fmuPath,
     const std::string& instanceName,
-    int& port,
+    std::string& bind,
     std::mutex& mtx,
-    std::condition_variable& cv)
+    std::condition_variable& cv,
+    bool localhost)
 {
 
     proxyfmu::filesystem::path executable;
@@ -30,16 +36,6 @@ void start_process(
 #else
     executable = "proxyfmu.exe";
 #endif
-
-    if (!proxyfmu::filesystem::exists(executable)) {
-        boost::dll::fs::error_code ec;
-        boost::dll::fs::path loc = boost::dll::program_location(ec);
-        if (!ec.failed()) {
-            executable = loc.parent_path().string() / executable;
-        } else {
-            std::cerr << "[proxyfmu] Error, unable to locate parent executable" << std::endl;
-        }
-    }
 
     if (!proxyfmu::filesystem::exists(executable)) {
         auto execPath = proxyfmu::filesystem::absolute(executable).string();
@@ -59,7 +55,7 @@ void start_process(
     std::cout << "\n";
     std::cout << "[proxyfmu] Booting FMU instance '" << instanceName << "'.." << std::endl;
 
-    std::string cmd(execStr + " --fmu \"" + fmuPath.string() + "\" --instanceName " + instanceName);
+    std::string cmd(execStr + " --fmu \"" + fmuPath.string() + "\" --instanceName " + instanceName + " --localhost " + boolToStr(localhost));
 
     boost::process::ipstream pipe_stream;
     boost::process::child c(cmd, boost::process::std_out > pipe_stream);
@@ -70,8 +66,11 @@ void start_process(
         if (!bound && line.substr(0, 16) == "[proxyfmu] port=") {
             {
                 std::lock_guard<std::mutex> lck(mtx);
-                port = std::stoi(line.substr(16));
-                std::cout << "[proxyfmu] FMU instance '" << instanceName << "' instantiated using port " << port << std::endl;
+                bind = line.substr(16);
+                if (bind.back() == '\r' || bind.back() == '\n') {
+                    bind.pop_back();
+                }
+                std::cout << "[proxyfmu] FMU instance '" << instanceName << "' instantiated and bound to " << bind << std::endl;
             }
             cv.notify_one();
             bound = true;
@@ -92,7 +91,7 @@ void start_process(
                   << instanceName << "' returned with status "
                   << std::to_string(status) << ". Unable to bind.." << std::endl;
         std::lock_guard<std::mutex> lck(mtx);
-        port = -999;
+        bind = "-";
 
         cv.notify_one();
     }

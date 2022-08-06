@@ -51,20 +51,23 @@ proxy_slave::proxy_slave(
     : fmilibcpp::slave(instanceName)
     , modelDescription_(std::move(modelDescription))
 {
-    int port = -1;
-    std::string host;
 
+    std::shared_ptr<TTransport> socket;
     if (!remote) {
-        host = "localhost";
         std::mutex mtx;
         std::condition_variable cv;
-        thread_ = std::make_unique<std::thread>(&start_process, fmuPath, instanceName, std::ref(port), std::ref(mtx), std::ref(cv));
+        std::string bind;
+        thread_ = std::make_unique<std::thread>(&start_process, fmuPath, instanceName, std::ref(bind), std::ref(mtx), std::ref(cv), true);
         std::unique_lock<std::mutex> lck(mtx);
-        while (port == -1) cv.wait(lck);
+        while (bind.empty()) cv.wait(lck);
+        if (bind != "-") {
+            socket = std::make_shared<TSocket>(bind);
+        }
+
     } else {
-        host = remote->host;
-        std::shared_ptr<TTransport> socket(new TSocket(host, remote->port));
-        auto transport = std::make_shared<TFramedTransport>(socket);
+        std::string host = remote->host;
+        std::shared_ptr<TTransport> tmp_socket(new TSocket(host, remote->port));
+        auto transport = std::make_shared<TFramedTransport>(tmp_socket);
         std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport));
         auto client = std::make_shared<BootServiceClient>(protocol);
         transport->open();
@@ -73,17 +76,18 @@ proxy_slave::proxy_slave(
         read_data(fmuPath.string(), data);
 
         const std::string fmuName = proxyfmu::filesystem::path(fmuPath).stem().string();
-        port = client->loadFromBinaryData(fmuName, instanceName, data);
+        int port = client->loadFromBinaryData(fmuName, instanceName, data);
         transport->close();
+
+        socket = std::make_shared<TSocket>("localhost", port);
     }
 
-    if (port == -999) {
+    if (!socket) {
         if (thread_) thread_->join();
         throw std::runtime_error("[proxyfmu] Unable to bind to external proxy process!");
     }
 
-    std::shared_ptr<TTransport> socket(new TSocket(host, port));
-    transport_ = std::make_shared<TFramedTransport>(socket);
+    transport_ = std::make_shared<TBufferedTransport>(socket);
     std::shared_ptr<TProtocol> protocol(new TBinaryProtocol(transport_));
     client_ = std::make_shared<FmuServiceClient>(protocol);
     transport_->open();
