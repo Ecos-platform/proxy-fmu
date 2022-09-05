@@ -5,7 +5,7 @@
 #include <proxyfmu/fs_portability.hpp>
 #include <proxyfmu/lib_info.hpp>
 
-#include <boost/program_options.hpp>
+#include <CLI/CLI.hpp>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TTransportUtils.h>
@@ -82,7 +82,7 @@ int run_application(const std::string& fmu, const std::string& instanceName)
             server->serve();
             break;
 
-        } catch (TTransportException& ex) {
+        } catch (const TTransportException& ex) {
             std::cout << "[proxyfmu] " << ex.what()
                       << ". Failed to bind to port " << std::to_string(port)
                       << ". Retrying with another one. Attempt " << std::to_string(i + 1)
@@ -96,13 +96,11 @@ int run_application(const std::string& fmu, const std::string& instanceName)
         std::cerr << "[proxyfmu] Unable to bind after max number of retries.." << std::endl;
         return UNHANDLED_ERROR;
     }
-
 }
 
-int printHelp(boost::program_options::options_description& desc)
+int printHelp(CLI::App& desc)
 {
-    std::cout << "proxyfmu" << '\n'
-              << desc << std::endl;
+    std::cout << desc.help() << std::endl;
     return SUCCESS;
 }
 
@@ -118,48 +116,32 @@ int printVersion()
 int main(int argc, char** argv)
 {
 
-    namespace po = boost::program_options;
+    CLI::App app{"proxyfmu"};
 
-    po::options_description desc("Options");
-    desc.add_options()("help,h", "Print this help message and quits.");
-    desc.add_options()("version,v", "Print program version.");
-    desc.add_options()("fmu", po::value<std::string>()->required(), "Location of the fmu to load.");
-    desc.add_options()("instanceName", po::value<std::string>()->required(), "Name of the slave instance.");
+    app.add_flag("-v,--version", "Print program version.");
+    app.add_option("--fmu", "Location of the fmu to load.");
+    app.add_option("--instanceName", "Name of the slave instance.");
 
     if (argc == 1) {
-        return printHelp(desc);
+        return printHelp(app);
     }
 
     try {
 
-        po::variables_map vm;
-        try {
+        CLI11_PARSE(app, argc, argv);
 
-            po::store(po::parse_command_line(argc, argv, desc), vm);
-
-            if (vm.count("help")) {
-                return printHelp(desc);
-            } else if (vm.count("version")) {
-                return printVersion();
-            }
-
-            po::notify(vm);
-
-        } catch (const po::error& e) {
-            std::cerr << "ERROR: " << e.what() << "\n"
-                      << std::endl;
-            std::cout << desc << std::endl;
-            return COMMANDLINE_ERROR;
+        if (app.count("--version")) {
+            return printVersion();
         }
 
-        const auto fmu = vm["fmu"].as<std::string>();
+        const auto fmu = app["--fmu"]->as<std::string>();
         const auto fmuPath = proxyfmu::filesystem::path(fmu);
         if (!proxyfmu::filesystem::exists(fmuPath)) {
             std::cerr << "[proxyfmu] No such file: '" << proxyfmu::filesystem::absolute(fmuPath) << "'";
             return COMMANDLINE_ERROR;
         }
 
-        const auto instanceName = vm["instanceName"].as<std::string>();
+        const auto instanceName = app["--instanceName"]->as<std::string>();
 
         return run_application(fmu, instanceName);
 

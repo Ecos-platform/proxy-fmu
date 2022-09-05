@@ -13,13 +13,11 @@ class ProxyFmuConan(ConanFile):
         "revision": "auto"
     }
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake"
+    generators = "cmake", "cmake_find_package"
     requires = (
-        "boost/1.71.0",
+        "cli11/2.2.0",
         "thrift/0.16.0",
-        "fmilibcpp/0.2.2@ais/testing",
-        # conflict resolution
-        "zlib/1.2.12"
+        "fmilibcpp/0.2.2@ais/testing"
     )
 
     def set_version(self):

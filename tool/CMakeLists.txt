@@ -13,10 +13,10 @@ target_include_directories(proxyfmu
         PRIVATE
         "${generatedSourcesDir}")
 target_link_libraries(proxyfmu
-        PUBLIC
-        fmilibcpp::fmilibcpp
+        PRIVATE
+        CLI11::CLI11
         thrift::thrift
-        Boost::program_options
+        fmilibcpp::fmilibcpp
         )
 if (UNIX)
   target_link_libraries(proxyfmu PRIVATE pthread)

@@ -21,16 +21,13 @@ option(PROXYFMU_BUILD_EXAMPLES "Build examples" OFF)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 set(generatedSourcesDir "${CMAKE_BINARY_DIR}/generated")
 
-set(Boost_USE_STATIC_LIBS ON)
-
 if (MSVC)
-    add_definitions("-D_WIN32_WINNT=0x600" "-D_CRT_SECURE_NO_WARNINGS")
     add_compile_options("/wd4996" "/wd4251" "/wd4244" "/wd4267")
 endif ()
 
@@ -80,8 +77,12 @@ else ()
 
 endif ()
 
-set(BOOST_COMPONENTS filesystem program_options)
+set(SUBPROCESS_INCLUDE_DIR ${CMAKE_BINARY_DIR}/thirdparty)
+file(DOWNLOAD https://raw.githubusercontent.com/Ecos-platform/subprocess.h/master/subprocess.h
+        ${SUBPROCESS_INCLUDE_DIR}/subprocess/subprocess.h)
+
 if (PROXYFMU_BUILD_TESTS)
+
     Include(FetchContent)
 
     FetchContent_Declare(
@@ -91,10 +92,11 @@ if (PROXYFMU_BUILD_TESTS)
     )
 
     FetchContent_MakeAvailable(Catch2)
+
 endif ()
 
-find_package(Boost 1.71 COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
-find_package(THRIFT REQUIRED)
+find_package(CLI11 REQUIRED)
+find_package(Thrift REQUIRED)
 find_package(Fmilibcpp CONFIG REQUIRED)
 
 
@@ -145,10 +147,3 @@ write_basic_package_version_file(
         VERSION "${PROJECT_VERSION}"
         COMPATIBILITY "SameMajorVersion")
 install(FILES "${versionFile}" DESTINATION "${PROXYFMU_CMAKE_INSTALL_DIR}")
-
-# Install custom find modules
-install(FILES
-        "${CMAKE_SOURCE_DIR}/cmake/FindTHRIFT.cmake"
-        DESTINATION
-        "${PROXYFMU_CMAKE_INSTALL_DIR}"
-        )
