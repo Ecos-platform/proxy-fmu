@@ -80,7 +80,11 @@ else ()
 
 endif ()
 
-set(BOOST_COMPONENTS filesystem program_options)
+set(SUBPROCESS_INCLUDE_DIR ${CMAKE_BINARY_DIR}/thirdparty)
+file(DOWNLOAD https://raw.githubusercontent.com/Ecos-platform/subprocess.h/master/subprocess.h
+        ${SUBPROCESS_INCLUDE_DIR}/subprocess/subprocess.h)
+
+set(BOOST_COMPONENTS program_options)
 if (PROXYFMU_BUILD_TESTS)
     Include(FetchContent)
 

@@ -9,11 +9,12 @@ target_include_directories(proxyfmu_booter
         "${CMAKE_SOURCE_DIR}/include"
         PRIVATE
         "${CMAKE_SOURCE_DIR}/src"
-        "${generatedSourcesDir}")
+        "${generatedSourcesDir}"
+        "${SUBPROCESS_INCLUDE_DIR}"
+        )
 target_link_libraries(proxyfmu_booter
         PRIVATE
         thrift::thrift
-        Boost::filesystem
         Boost::program_options)
 if (UNIX)
     target_link_libraries(proxyfmu_booter PRIVATE

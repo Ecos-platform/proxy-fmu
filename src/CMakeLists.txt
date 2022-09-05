@@ -62,13 +62,13 @@ target_include_directories(proxyfmu-client
         PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}"
         "${generatedSourcesDir}"
+        "${SUBPROCESS_INCLUDE_DIR}"
         )
 target_link_libraries(proxyfmu-client
         PUBLIC
         fmilibcpp::fmilibcpp
         PRIVATE
         thrift::thrift
-        Boost::filesystem
         )
 if (UNIX)
     target_link_libraries(proxyfmu-client PRIVATE pthread)
