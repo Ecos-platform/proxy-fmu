@@ -20,7 +20,10 @@ option(PROXYFMU_BUILD_EXAMPLES "Build examples" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 set(generatedSourcesDir "${CMAKE_BINARY_DIR}/generated")
 
@@ -62,17 +65,18 @@ if (CONAN_EXPORTED) # in conan local cache
     conan_basic_setup()
 else ()
 
-    include(cmake/conan.cmake)
+    include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/conan.cmake")
     conan_check(REQUIRED)
 
     conan_cmake_autodetect(settings)
-
     conan_add_remote(NAME ais URL https://ais.jfrog.io/artifactory/api/conan/ais-conan-local)
-    conan_cmake_run(
-            CONANFILE conanfile.py
+
+    conan_cmake_install(PATH_OR_REFERENCE ..
             BUILD missing
-            SETTINGS ${settings}
-            BASIC_SETUP)
+            SETTINGS ${settings})
+
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
 
 endif ()
 
