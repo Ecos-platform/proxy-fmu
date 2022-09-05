@@ -119,8 +119,8 @@ int main(int argc, char** argv)
     CLI::App app{"proxyfmu"};
 
     app.add_flag("-v,--version", "Print program version.");
-    app.add_option("--fmu", "Location of the fmu to load.")->required();
-    app.add_option("--instanceName", "Name of the slave instance.")->required();
+    app.add_option("--fmu", "Location of the fmu to load.");
+    app.add_option("--instanceName", "Name of the slave instance.");
 
     if (argc == 1) {
         return printHelp(app);

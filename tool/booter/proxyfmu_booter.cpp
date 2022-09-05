@@ -81,7 +81,7 @@ int main(int argc, char** argv)
 CLI::App app{"proxyfmu_booter"};
 
     app.add_option("-v,--version", "Print program version.");
-    app.add_option("--port", "Specify the network port to be used.")->required();
+    app.add_option("--port", "Specify the network port to be used.");
 
     if (argc == 1) {
         return printHelp(app);
