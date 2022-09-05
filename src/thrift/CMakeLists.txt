@@ -6,6 +6,8 @@ file(MAKE_DIRECTORY "${generatedSourcesDir}")
 file(MAKE_DIRECTORY "${thriftCppSourcesDir}")
 file(MAKE_DIRECTORY "${thriftJavaSourcesDir}")
 
+find_program(THRIFT_EXECUTABLE NAMES thrift)
+
 if (NOT THRIFT_EXECUTABLE)
     message(FATAL_ERROR "The thrift compiler was not found. Cannot generate Thrift sources.")
 endif ()

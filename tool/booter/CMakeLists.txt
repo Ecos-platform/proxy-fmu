@@ -14,8 +14,9 @@ target_include_directories(proxyfmu_booter
         )
 target_link_libraries(proxyfmu_booter
         PRIVATE
+        CLI11::CLI11
         thrift::thrift
-        Boost::program_options)
+        )
 if (UNIX)
     target_link_libraries(proxyfmu_booter PRIVATE
             pthread

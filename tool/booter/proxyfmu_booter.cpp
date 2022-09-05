@@ -3,7 +3,7 @@
 
 #include <proxyfmu/lib_info.hpp>
 
-#include <boost/program_options.hpp>
+#include <CLI/CLI.hpp>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TTransportUtils.h>
@@ -58,10 +58,9 @@ int run_application(const int port)
     return SUCCESS;
 }
 
-int printHelp(boost::program_options::options_description& desc)
+int printHelp(CLI::App& desc)
 {
-    std::cout << "proxyfmu-booter" << '\n'
-              << desc << std::endl;
+    std::cout << desc.help() << std::endl;
     return SUCCESS;
 }
 
@@ -78,40 +77,23 @@ int printVersion()
 
 int main(int argc, char** argv)
 {
-    namespace po = boost::program_options;
 
-    po::options_description desc("Options");
-    desc.add_options()("help,h", "Print this help message and quits.");
-    desc.add_options()("version,v", "Print program version.");
-    desc.add_options()("port", po::value<int>()->required(), "Specify the network port to be used.");
+CLI::App app{"proxyfmu_booter"};
+
+    app.add_option("-v,--version", "Print program version.");
+    app.add_option("--port", "Specify the network port to be used.")->required();
 
     if (argc == 1) {
-        return printHelp(desc);
+        return printHelp(app);
     }
 
     try {
 
-        po::variables_map vm;
-        try {
-
-            po::store(po::parse_command_line(argc, argv, desc), vm);
-
-            if (vm.count("help")) {
-                return printHelp(desc);
-            } else if (vm.count("version")) {
-                return printVersion();
-            }
-
-            po::notify(vm);
-
-        } catch (const po::error& e) {
-            std::cerr << "ERROR: " << e.what() << "\n"
-                      << std::endl;
-            std::cout << desc << std::endl;
-            return COMMANDLINE_ERROR;
+        if (app.count("--version")) {
+            return printVersion();
         }
 
-        auto port = vm["port"].as<int>();
+        const auto port = app["--port"]->as<int>();
 
         return run_application(port);
 

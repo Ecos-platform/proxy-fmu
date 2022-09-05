@@ -28,7 +28,7 @@ IncludeBlocks: Regroup
 IncludeCategories:
   - Regex:      '^[<"]proxyfmu[/.]'
     Priority:   20
-  - Regex:      '^[<"](fmilibcpp|subprocess|boost|thrift)[/.]'
+  - Regex:      '^[<"](fmilibcpp|subprocess|CLI|thrift)[/.]'
     Priority:   30
   - Regex:      '^"'
     Priority:   10
