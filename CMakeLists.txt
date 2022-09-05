@@ -97,7 +97,7 @@ endif ()
 
 find_package(CLI11 REQUIRED)
 find_package(Thrift REQUIRED)
-find_package(fmilibcpp REQUIRED)
+find_package(Fmilibcpp CONFIG REQUIRED)
 
 
 # ==============================================================================
