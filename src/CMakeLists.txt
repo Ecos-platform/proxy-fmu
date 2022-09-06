@@ -9,11 +9,9 @@ set(generatedSourcesDir "${CMAKE_BINARY_DIR}/generated")
 
 set(commonPublicHeaders
 
-        "proxyfmu/fixed_range_random_generator.hpp"
         "proxyfmu/fs_portability.hpp"
         "proxyfmu/lib_info.hpp"
         "proxyfmu/remote_info.hpp"
-        "proxyfmu/temp_dir.hpp"
 
         )
 

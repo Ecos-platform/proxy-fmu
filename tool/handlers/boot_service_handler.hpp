@@ -2,7 +2,7 @@
 #ifndef PROXYFMU_BOOT_SERVICE_HANDLER_HPP
 #define PROXYFMU_BOOT_SERVICE_HANDLER_HPP
 
-#include <proxyfmu/temp_dir.hpp>
+#include  "../temp_dir.hpp"
 #include <proxyfmu/thrift/BootService.h>
 
 #include <memory>
