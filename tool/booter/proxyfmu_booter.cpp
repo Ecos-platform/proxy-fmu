@@ -64,12 +64,12 @@ int printHelp(CLI::App& desc)
     return SUCCESS;
 }
 
-int printVersion()
+std::string version()
 {
-    // namespace
     const auto v = proxyfmu::library_version();
-    std::cout << v.major << "." << v.minor << "." << v.patch;
-    return SUCCESS;
+    std::stringstream ss;
+    ss << "v" << v.major << "." << v.minor << "." << v.patch;
+    return ss.str();
 }
 
 } // namespace
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
 
 CLI::App app{"proxyfmu_booter"};
 
-    app.add_option("-v,--version", "Print program version.");
+    app.set_version_flag("-v,--version", version());
     app.add_option("--port", "Specify the network port to be used.");
 
     if (argc == 1) {
@@ -89,9 +89,7 @@ CLI::App app{"proxyfmu_booter"};
 
     try {
 
-        if (app.count("--version")) {
-            return printVersion();
-        }
+        CLI11_PARSE(app, argc, argv);
 
         const auto port = app["--port"]->as<int>();
 
