@@ -1,16 +1,16 @@
 
-add_subdirectory(booter)
-
-
 add_executable(proxyfmu
         proxyfmu.cpp
-        fmu_service_handler.cpp
+        "handlers/fmu_service_handler.cpp"
+        "handlers/boot_service_handler.cpp"
         "$<TARGET_OBJECTS:proxyfmu-service>"
         "${generatedSourcesDir}/proxyfmu/lib_info.cpp")
 target_include_directories(proxyfmu
-        PUBLIC
-        "${CMAKE_SOURCE_DIR}/include"
         PRIVATE
+        "${CMAKE_SOURCE_DIR}/include"
+        "${CMAKE_SOURCE_DIR}/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/handlers"
+        "${SUBPROCESS_INCLUDE_DIR}"
         "${generatedSourcesDir}")
 target_link_libraries(proxyfmu
         PRIVATE

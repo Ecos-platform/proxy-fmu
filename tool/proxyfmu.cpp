@@ -1,4 +1,5 @@
 
+#include "boot_service_handler.hpp"
 #include "fmu_service_handler.hpp"
 
 #include <proxyfmu/fixed_range_random_generator.hpp>
@@ -26,6 +27,17 @@ using namespace ::apache::thrift::transport;
 namespace
 {
 
+
+const int port_range_min = 49152;
+const int port_range_max = 65535;
+
+const int max_port_retries = 10;
+
+const int SUCCESS = 0;
+const int COMMANDLINE_ERROR = 1;
+const int UNHANDLED_ERROR = 2;
+
+
 class ServerReadyEventHandler : public TServerEventHandler
 {
 
@@ -43,14 +55,15 @@ public:
     }
 };
 
-const int port_range_min = 49152;
-const int port_range_max = 65535;
-
-const int max_port_retries = 10;
-
-const int SUCCESS = 0;
-const int COMMANDLINE_ERROR = 1;
-const int UNHANDLED_ERROR = 2;
+void wait_for_input()
+{
+    std::cout << '\n'
+              << "Press any key to quit...\n";
+    // clang-format off
+    while (std::cin.get() != '\n');
+    //clang-format on
+    std::cout << "Done." << std::endl;
+}
 
 int run_application(const std::string& fmu, const std::string& instanceName)
 {
@@ -99,6 +112,28 @@ int run_application(const std::string& fmu, const std::string& instanceName)
     }
 }
 
+int run_boot_application(const int port)
+{
+    std::unique_ptr<TSimpleServer> server;
+    std::shared_ptr<boot_service_handler> handler(new boot_service_handler());
+    std::shared_ptr<TProcessor> processor(new BootServiceProcessor(handler));
+
+    std::shared_ptr<TTransportFactory> transportFactory(new TFramedTransportFactory());
+    std::shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
+
+    std::shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+    server = std::make_unique<TSimpleServer>(processor, serverTransport, transportFactory, protocolFactory);
+
+    std::thread t([&server] { server->serve(); });
+
+    wait_for_input();
+
+    server->stop();
+    t.join();
+
+    return SUCCESS;
+}
+
 int printHelp(CLI::App& desc)
 {
     std::cout << desc.help() << std::endl;
@@ -125,6 +160,9 @@ int main(int argc, char** argv)
     app.add_option("--fmu", "Location of the fmu to load.");
     app.add_option("--instanceName", "Name of the slave instance.");
 
+    CLI::App* sub = app.add_subcommand("boot");
+    sub->add_option("--port", "Specify the network port to be used.")->required();
+
     if (argc == 1) {
         return printHelp(app);
     }
@@ -133,16 +171,25 @@ int main(int argc, char** argv)
 
         CLI11_PARSE(app, argc, argv);
 
-        const auto fmu = app["--fmu"]->as<std::string>();
-        const auto fmuPath = proxyfmu::filesystem::path(fmu);
-        if (!proxyfmu::filesystem::exists(fmuPath)) {
-            std::cerr << "[proxyfmu] No such file: '" << proxyfmu::filesystem::absolute(fmuPath) << "'";
-            return COMMANDLINE_ERROR;
+        if (*sub) {
+
+            const auto port = sub->get_option("--port")->as<int>();
+            return run_boot_application(port);
+
+        } else {
+            const auto fmu = app["--fmu"]->as<std::string>();
+            const auto fmuPath = proxyfmu::filesystem::path(fmu);
+            if (!proxyfmu::filesystem::exists(fmuPath)) {
+                std::cerr << "[proxyfmu] No such file: '" << proxyfmu::filesystem::absolute(fmuPath) << "'";
+                return COMMANDLINE_ERROR;
+            }
+
+            const auto instanceName = app["--instanceName"]->as<std::string>();
+
+            return run_application(fmu, instanceName);
         }
 
-        const auto instanceName = app["--instanceName"]->as<std::string>();
 
-        return run_application(fmu, instanceName);
 
     } catch (const std::exception& e) {
         std::cerr << "[proxyfmu] Unhandled Exception reached the top of main: " << e.what() << ", application will now exit" << std::endl;

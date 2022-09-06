@@ -2,7 +2,6 @@
 #include "fmu_service_handler.hpp"
 
 #include <iostream>
-#include <thread>
 #include <utility>
 
 using namespace proxyfmu::thrift;
