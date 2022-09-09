@@ -1,4 +1,5 @@
 
+#include <CLI/CLI.hpp>
 #include <fmilibcpp/fmu.hpp>
 
 #include <exception>
@@ -58,7 +59,12 @@ void run(const std::string& fmuPath)
 int main(int argc, char** argv)
 {
 
-    if (argc != 2) return -1;
+    CLI::App app{"fmi_test"};
+
+    std::string fmuPath = std::string(PROXYFMU_DATA_DIR) + "/fmus/1.0/identity.fmu";
+    app.add_option("--fmu", fmuPath);
+
+    CLI11_PARSE(app, argc, argv);
 
     try {
 

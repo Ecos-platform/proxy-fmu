@@ -71,16 +71,24 @@ void start_process(
 
     std::cout << "[proxyfmu] Found proxyfmu executable: " << executable << " version: ";
     std::cout.flush();
-    system((execStr + " -v").c_str());
-    std::cout << "\n";
+    int statusCode = system((execStr + " -v").c_str());
+    if (statusCode != 0) {
+        std::cerr << "ERROR - unable to invoke proxyfmu!" << std::endl;
+
+        std::lock_guard<std::mutex> lck(mtx);
+        port = -999;
+        cv.notify_one();
+        return;
+    }
+    std::cout << std::endl;
     std::cout << "[proxyfmu] Booting FMU instance '" << instanceName << "'.." << std::endl;
 
     const std::string fmuPathStr = fmuPath.string();
     std::vector<const char*> cmd = {execStr.c_str(), "--fmu", fmuPathStr.c_str(), "--instanceName", instanceName.c_str(), nullptr};
 
-    struct subprocess_s process
-    {
-    };
+    // clang-format off
+    struct subprocess_s process{};
+    // clang-format on
     int result = subprocess_create(cmd.data(), subprocess_option_inherit_environment | subprocess_option_no_window, &process);
 
     bool bound = false;
@@ -100,7 +108,7 @@ void start_process(
             } else if (line.substr(0, 16) == "[proxyfmu] freed") {
                 break;
             } else {
-                std::cerr << line << std::endl;
+                std::cerr << line;
             }
         }
 

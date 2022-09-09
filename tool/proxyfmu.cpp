@@ -2,7 +2,7 @@
 #include "boot_service_handler.hpp"
 #include "fmu_service_handler.hpp"
 
-#include <proxyfmu/fixed_range_random_generator.hpp>
+#include "fixed_range_random_generator.hpp"
 #include <proxyfmu/fs_portability.hpp>
 #include <proxyfmu/lib_info.hpp>
 
@@ -13,7 +13,6 @@
 
 #include <functional>
 #include <iostream>
-#include <sstream>
 #include <utility>
 
 using namespace proxyfmu::thrift;
