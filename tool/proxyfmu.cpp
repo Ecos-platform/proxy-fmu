@@ -1,8 +1,8 @@
 
-#include "boot_service_handler.hpp"
-#include "fmu_service_handler.hpp"
-
 #include "fixed_range_random_generator.hpp"
+#include "handlers/boot_service_handler.hpp"
+#include "handlers/fmu_service_handler.hpp"
+
 #include <proxyfmu/fs_portability.hpp>
 #include <proxyfmu/lib_info.hpp>
 
