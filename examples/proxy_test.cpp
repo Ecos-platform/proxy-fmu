@@ -69,20 +69,21 @@ int main(int argc, char** argv)
     sub->add_option("--host")->required();
     sub->add_option("--port")->required();
 
-    CLI11_PARSE(app, argc, argv);
-
-    std::optional<proxyfmu::remote_info> remote;
-    if (*sub) {
-        const auto host = sub->get_option("--host")->as<std::string>();
-        const auto port = sub->get_option("--port")->as<int>();
-        remote = {host, port};
-    }
 
     try {
 
+        CLI11_PARSE(app, argc, argv);
+
+        std::optional<proxyfmu::remote_info> remote;
+        if (*sub) {
+            const auto host = sub->get_option("--host")->as<std::string>();
+            const auto port = sub->get_option("--port")->as<int>();
+            remote = {host, port};
+        }
+
         run(fmuPath, remote);
 
-    } catch (std::exception& ex) {
+    } catch (const std::exception& ex) {
         std::cerr << "error: " << ex.what() << std::endl;
     }
     return 0;

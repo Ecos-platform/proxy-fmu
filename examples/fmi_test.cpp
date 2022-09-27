@@ -64,13 +64,12 @@ int main(int argc, char** argv)
     std::string fmuPath = std::string(PROXYFMU_DATA_DIR) + "/fmus/1.0/identity.fmu";
     app.add_option("--fmu", fmuPath);
 
-    CLI11_PARSE(app, argc, argv);
-
     try {
 
-        run(argv[1]);
+        CLI11_PARSE(app, argc, argv)
+        run(fmuPath);
 
-    } catch (std::exception& ex) {
+    } catch (const std::exception& ex) {
         std::cerr << "error: " << ex.what() << std::endl;
     }
     return 0;
