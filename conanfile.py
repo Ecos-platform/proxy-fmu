@@ -16,8 +16,8 @@ class ProxyFmuConan(ConanFile):
     generators = "cmake", "cmake_find_package"
     requires = (
         "cli11/2.2.0",
-        "thrift/0.16.0",
-        "fmilibcpp/0.2.2@ais/testing"
+        "thrift/0.17.0",
+        "fmilibcpp/0.2.2@ais/stable"
     )
 
     def set_version(self):
