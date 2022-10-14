@@ -54,12 +54,10 @@ void start_process(
 
     if (!proxyfmu::filesystem::exists(executable)) {
         const std::string loc = getLoc();
-        executable = proxyfmu::filesystem::path(loc).parent_path().string() / executable;
-    }
-
-    if (!proxyfmu::filesystem::exists(executable)) {
-        const auto execPath = proxyfmu::filesystem::absolute(executable).string();
-        throw std::runtime_error("[proxyfmu] No proxyfmu executable found. '" + execPath + "' does not exist!");
+        auto alt_executable = proxyfmu::filesystem::path(loc).parent_path().string() / executable;
+        if (proxyfmu::filesystem::exists(alt_executable)) {
+            executable = alt_executable;
+        }
     }
 
     std::string execStr = executable.string();
@@ -69,8 +67,7 @@ void start_process(
     }
 #endif
 
-    std::cout << "[proxyfmu] Found proxyfmu executable: " << executable << " version: ";
-    std::cout.flush();
+    std::cout << "[proxyfmu] Checking if proxyfmu is available.." << std::endl;
     int statusCode = system((execStr + " -v").c_str());
     if (statusCode != 0) {
         std::cerr << "ERROR - unable to invoke proxyfmu!" << std::endl;
