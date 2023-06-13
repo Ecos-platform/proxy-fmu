@@ -1,0 +1,15 @@
+{
+  "default-registry": {
+    "kind": "git",
+    "repository": "https://github.com/Microsoft/vcpkg",
+    "baseline": "1ba9a2591f15af5900f2ce2b3e2bf31771e3ac48"
+  },
+  "registries": [
+    {
+      "kind": "git",
+      "baseline": "651ff7829362c530e096d51b5bf1bc081eda30e0",
+      "repository": "https://github.com/Ecos-platform/vcpkg-registry",
+      "packages": [ "simple-ssp", "fmilibcpp" ]
+    }
+  ]
+}

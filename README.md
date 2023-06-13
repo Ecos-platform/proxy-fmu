@@ -16,30 +16,16 @@ The solution is written in C++ and the static library and bundled executables ha
 
 Currently, only Windows and Linux are supported, but there are no known obstacles for supporting the Darwin platform.
 
-### Building
+### How to build
 
-Building `proxy-fmu` is straightforward, however, conan is a hard requirement:
-```cmd
-pip install conan
-```
+`proxyfmu` is easiest built in conjunction with [vcpkg](https://vcpkg.io/en/index.html).
+
+#### vcpkg (using manifest mode)
+
+Call CMake with `-DCMAKE_TOOLCHAIN_FILE=[path to vcpkg]/scripts/buildsystems/vcpkg.cmake`
+
 
 For an example on how to build the project using the command line, refer to the [CI setup](https://github.com/open-simulation-platform/proxy-fmu/blob/master/.github/workflows/build.yml).
-
-
-### Installing
-
-proxy-fmu is available through the conan remote ais:
-
-`conan remote add ais https://ais.jfrog.io/artifactory/api/conan/ais-conan-local`
-
-Then add a dependency to:
-```
-libecos/<version>@ais/stable (stable channel -> releases)
-libecos/<version>@ais/testing (development builds -> master)
-libecos/<version>@ais/testing-<branch>` (development builds -> branches)
-```
-
-The artifact contains both the library and required executables.
 
 
 ### How is this project related to `FMU-proxy`?

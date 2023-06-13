@@ -32,14 +32,3 @@ if (PROXYFMU_BUILD_TESTS)
           Copying $<TARGET_FILE:proxyfmu> into ${CMAKE_BINARY_DIR}/tests/$<TARGET_FILE_NAME:proxyfmu>
           )
 endif()
-
-
-# ==============================================================================
-# Installation rules
-# ==============================================================================
-
-install(
-        TARGETS
-        proxyfmu
-        DESTINATION ${PROXYFMU_INSTALL_DESTINATIONS}
-)

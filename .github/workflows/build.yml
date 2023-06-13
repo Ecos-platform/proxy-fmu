@@ -1,14 +1,10 @@
 name: Build
 
-env:
-  CONAN_REVISIONS_ENABLED: 1
-  CONAN_NON_INTERACTIVE: True
-
 on: [push, workflow_dispatch]
 
 jobs:
   cmake-on-linux:
-    name: cmake
+
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,15 +13,22 @@ jobs:
         build_type: [Debug, Release]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Install prerequisites
-        run: |
-          sudo pip3 install --upgrade setuptools pip
-          sudo pip3 install conan
+      - uses: actions/checkout@v3
+
+      - name: Restore artifacts, or run vcpkg, build (and cache artifacts as post step)
+        uses: lukka/run-vcpkg@v10
+        id: runvcpkg
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: '1ba9a2591f15af5900f2ce2b3e2bf31771e3ac48'
+          vcpkgJsonGlob: 'vcpkg.json'
+          appendedCacheKey: vcpkginstall
+
       - name: Configure and build
         run: |
-          cmake . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DPROXYFMU_BUILD_EXAMPLES=ON -DPROXYFMU_BUILD_TESTS=ON
+          cmake . -B build -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DPROXYFMU_BUILD_EXAMPLES=ON -DPROXYFMU_BUILD_TESTS=ON
           cmake --build build
+
       - name: Test
         run: |
          cd build/tests
@@ -39,7 +42,7 @@ jobs:
 
 
   cmake-on-windows:
-    name: cmake
+
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -48,15 +51,22 @@ jobs:
         build_type: [Debug, Release]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Install prerequisites
-        run: |
-          pip3 install --upgrade setuptools pip
-          pip3 install conan
+      - uses: actions/checkout@v3
+
+      - name: Restore artifacts, or run vcpkg, build (and cache artifacts as post step)
+        uses: lukka/run-vcpkg@v10
+        id: runvcpkg
+        with:
+          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+          vcpkgGitCommitId: '1ba9a2591f15af5900f2ce2b3e2bf31771e3ac48'
+          vcpkgJsonGlob: 'vcpkg.json'
+          appendedCacheKey: vcpkginstall
+
       - name: Configure and build
         run: |
-          cmake . -A x64 -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DPROXYFMU_BUILD_EXAMPLES=ON -DPROXYFMU_BUILD_TESTS=ON
+          cmake . -A x64 -B build -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DPROXYFMU_BUILD_EXAMPLES=ON -DPROXYFMU_BUILD_TESTS=ON
           cmake --build build --config ${{ matrix.build_type }}
+
       - name: Test
         run: |
          cd build/tests
