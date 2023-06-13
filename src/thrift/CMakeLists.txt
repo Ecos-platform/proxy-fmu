@@ -6,7 +6,7 @@ file(MAKE_DIRECTORY "${generatedSourcesDir}")
 file(MAKE_DIRECTORY "${thriftCppSourcesDir}")
 file(MAKE_DIRECTORY "${thriftJavaSourcesDir}")
 
-find_program(THRIFT_EXECUTABLE NAMES thrift HINTS "${CONAN_THRIFT_ROOT}" PATH_SUFFIXES "bin")
+find_program(THRIFT_EXECUTABLE NAMES thrift)
 
 if (NOT THRIFT_EXECUTABLE)
     message(FATAL_ERROR "The thrift compiler was not found. Cannot generate Thrift sources.")
