@@ -53,7 +53,7 @@ if (PROXYFMU_BUILD_TESTS)
 
 endif ()
 
-find_package(cli11 CONFIG REQUIRED)
+find_package(CLI11 CONFIG REQUIRED)
 find_package(Thrift CONFIG REQUIRED)
 find_package(fmilibcpp CONFIG REQUIRED)
 
