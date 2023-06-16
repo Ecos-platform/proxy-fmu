@@ -7,7 +7,7 @@
   "registries": [
     {
       "kind": "git",
-      "baseline": "651ff7829362c530e096d51b5bf1bc081eda30e0",
+      "baseline": "9e73cf3e74828721df0fb035d5745c9dd898e46f",
       "repository": "https://github.com/Ecos-platform/vcpkg-registry",
       "packages": [ "simple-ssp", "fmilibcpp" ]
     }

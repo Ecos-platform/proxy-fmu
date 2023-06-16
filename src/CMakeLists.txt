@@ -1,6 +1,6 @@
 add_subdirectory(thrift)
 
-set(publicHeaderDir ${CMAKE_SOURCE_DIR}/include)
+set(publicHeaderDir ${PROJECT_SOURCE_DIR}/include)
 set(generatedSourcesDir "${CMAKE_BINARY_DIR}/generated")
 
 # ==============================================================================
@@ -56,7 +56,8 @@ target_compile_features(proxyfmu-client PUBLIC "cxx_std_17")
 #set_target_properties(proxyfmu-client PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(proxyfmu-client
         PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
         PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}"
         "${generatedSourcesDir}"

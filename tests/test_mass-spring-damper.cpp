@@ -2,6 +2,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <unordered_map>
+
 using namespace proxyfmu;
 using namespace fmilibcpp;
 

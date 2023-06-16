@@ -2,6 +2,7 @@
 #include <proxyfmu/client/proxy_fmu.hpp>
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 using namespace proxyfmu;
 using namespace fmilibcpp;
@@ -26,7 +27,7 @@ void test(fmu& fmu)
     std::vector<double> realRef(1);
 
     slave->get_real(vr, realRef);
-    REQUIRE(realRef[0] == Approx(298));
+    REQUIRE_THAT(realRef[0], Catch::Matchers::WithinRel(298.f));
 
     REQUIRE(slave->step(0.0, 0.1));
 
