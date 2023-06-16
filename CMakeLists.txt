@@ -30,10 +30,6 @@ if (MSVC)
     add_compile_options("/wd4996" "/wd4251" "/wd4244" "/wd4267")
 endif ()
 
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Release")
-endif ()
-
 
 # ==============================================================================
 # Dependencies
@@ -50,7 +46,7 @@ if (PROXYFMU_BUILD_TESTS)
     FetchContent_Declare(
             Catch2
             GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-            GIT_TAG v2.13.8
+            GIT_TAG v3.3.2
     )
 
     FetchContent_MakeAvailable(Catch2)
