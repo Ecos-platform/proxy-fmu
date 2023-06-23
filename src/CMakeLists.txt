@@ -75,18 +75,3 @@ endif ()
 
 # Make sure executable is up to date
 add_dependencies(proxyfmu-client proxyfmu)
-
-
-# ==============================================================================
-# Installation rules
-# ==============================================================================
-
-install(
-        TARGETS proxyfmu-client
-        EXPORT "${PROXYFMU_EXPORT_TARGET}"
-        ${PROXYFMU_INSTALL_DESTINATIONS}
-)
-install(
-        DIRECTORY "${publicHeaderDir}/proxyfmu"
-        DESTINATION "${PROXYFMU_HEADER_INSTALL_DIR}"
-)
