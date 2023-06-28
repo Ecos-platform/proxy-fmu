@@ -2,7 +2,7 @@
 
 include(CMakeFindDependencyMacro)
 
-find_dependency(cli11 CONFIG REQUIRED)
+find_dependency(CLI11 CONFIG REQUIRED)
 find_dependency(Thrift CONFIG REQUIRED)
 find_dependency(fmilibcpp CONFIG REQUIRED)
 
